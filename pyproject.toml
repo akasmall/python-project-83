@@ -1,12 +1,21 @@
 [tool.poetry]
-name = "python-project-83"
+name = "hexlet-code"
 version = "0.1.0"
 description = ""
 authors = ["akasmall <aka_sm@ro.ru>"]
 readme = "README.md"
+packages = [
+  { include = "page_analyzer" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pytest = "^8.3.2"
+flask = "^3.0.3"
+gunicorn = "^23.0.0"
+python-dotenv = "^1.0.1"
+pylint = "^3.2.7"
+psycopg2-binary = "^2.9.9"
 
 
 [build-system]
