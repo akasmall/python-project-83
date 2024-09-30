@@ -7,7 +7,7 @@ CREATE TABLE urls(
     created_at DATE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE url(
+CREATE TABLE url_check(
     id SERIAL PRIMARY KEY,
     url_id SERIAL REFERENCES urls (id),
     status_code INT,
