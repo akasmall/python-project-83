@@ -41,19 +41,20 @@ def insert_url(conn, url, cursor=None):  # pylint: disable=W0613
         'INSERT INTO urls (name) VALUES (%s) RETURNING id;',
         (url,)
     )
-    return cursor.fetchone().id
+    res = cursor.fetchone().id
+    return res
 
 
 @perform_in_db()
 def get_url(conn, url_id, cursor=None):  # pylint: disable=W0613
-    cursor.execute('SELECT * FROM urls WHERE id == (%s);', (url_id,))
+    cursor.execute('SELECT * FROM urls WHERE id = (%s);', (url_id,))
     return cursor.fetchone()
 
 
 @perform_in_db()
 def check_url_exists(conn, url, cursor=None):  # pylint: disable=W0613
     cursor.execute(
-        'SELECT * FROM urls WHERE name == (%s);', (url,))
+        'SELECT * FROM urls WHERE name = %s;', (url,))
     return cursor.fetchone()
 
 
@@ -65,10 +66,11 @@ def insert_check(conn, url_id, url_info, cursor=None):  # pylint: disable=W0613
 @perform_in_db()
 def get_url_checks(conn, url_id, cursor=None):  # pylint: disable=W0613
     cursor.execute(
-        'SELECT * FROM url_check WHERE url_id == (%s) ORDER BY id DESC;',
+        'SELECT * FROM url_check WHERE url_id = (%s) ORDER BY id DESC;',
         (url_id,)
     )
-    return cursor.fetchall()
+    res = cursor.fetchall()
+    return res
 
 
 @perform_in_db()

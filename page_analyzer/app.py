@@ -25,13 +25,13 @@ def show_urls_page():
     return render_template('urls/list.html', urls_check=urls_check)
 
 
-@app.route('/urls/<url_id>')
+@app.route('/urls/<url_id>/')
 def show_url_page(url_id):
     conn = db.connect_db(app)
     url = db.get_url(conn, url_id)
     if not url:
         abort(404)
-    checks = db.get_url_checks(conn, url.id)
+    checks = db.get_url_checks(conn, url_id)
     db.closed(conn)
     return render_template('urls/default.html', url=url, checks=checks)
 
@@ -54,6 +54,23 @@ def add_url():
         url_id = db.insert_url(conn, normal_url)
     db.closed(conn)
     return redirect(url_for('show_url_page', url_id=url_id))
+
+
+@app.route('/urls/<url_id>/check/')
+def check_url_page(url_id):
+    conn = db.connect_db(app)
+    url = db.get_url(conn, url_id)
+    try:
+        response = request.get(url.name)
+        response.raise_for_status()
+    except request.RequestException:
+        flash('Произошла ошибка при проверке', 'danger')
+        conn.close()
+        return redirect(url_for('show_url_page', url_id=url_id))
+
+    url_info = extract_page_data(response)
+
+    return
 
 
 @app.errorhandler(404)

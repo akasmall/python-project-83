@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS url_checks(
     url_id SERIAL REFERENCES urls (id),
     status_code INT,
     h1 VARCHAR(255),
-    title TEXT,
+    title VARCHAR(255),
     description VARCHAR(255),
     created_at DATE DEFAULT CURRENT_TIMESTAMP
 );
