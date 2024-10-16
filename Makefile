@@ -2,6 +2,12 @@ install:
 	# poetry install
 	DATABASE_URL="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):5432/$(POSTGRES_DB)" && \
 		psql -a -d $$DATABASE_URL -f database.sql && \
+		poetry install
+
+local-build:
+	# poetry install
+	DATABASE_URL="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):5432/$(POSTGRES_DB)" && \
+		psql -a -d $$DATABASE_URL -f database.sql && \
 		pip install poetry && \
 		poetry install
 
