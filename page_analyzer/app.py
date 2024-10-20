@@ -1,5 +1,4 @@
 import os
-import requests
 
 # from dotenv import load_dotenv
 from flask import (
@@ -8,7 +7,6 @@ from flask import (
 )
 from page_analyzer import db_manager as db
 from page_analyzer.utils import normalize_url, validate_url
-from page_analyzer.page_checker import extract_page_data
 
 try:
     from dotenv import load_dotenv
@@ -66,36 +64,6 @@ def add_url():
         url_id = db.insert_url(conn, normal_url)
     db.close(conn)
     return redirect(url_for('show_url_page', url_id=url_id))
-
-
-@app.route('/urls/<url_id>/check/', methods=['POST'])
-def check_url_page(url_id):
-    conn = db.connect_db(app)
-    url = db.get_url(conn, url_id)
-    try:
-        response = requests.get(url.name, timeout=10)
-        response.raise_for_status()
-    except requests.RequestException:
-        flash('Произошла ошибка при проверке', 'danger')
-        conn.close()
-        return redirect(url_for('show_url_page', url_id=url_id))
-
-    url_info = extract_page_data(response)
-    flash('Страница успешно проверена', 'success')
-    db.insert_check(conn, url_id, url_info)
-    db.close(conn)
-
-    return redirect(url_for('show_url_page', url_id=url_id))
-
-
-@app.errorhandler(404)
-def page_not_found(_):
-    return render_template('errors/404.html'), 404
-
-
-@app.errorhandler(500)
-def internal_server_error(_):
-    return render_template('errors/500.html'), 500
 
 
 if __name__ == '__main__':
