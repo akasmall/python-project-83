@@ -1,12 +1,24 @@
 import os
-import psycopg2
-from dotenv import load_dotenv
-from flask import (Flask, flash, redirect, render_template,
-                   abort, request, url_for)
+import requests
+
+# from dotenv import load_dotenv
+from flask import (
+    Flask, flash, redirect, render_template,
+    abort, request, url_for
+)
 from page_analyzer import db_manager as db
 from page_analyzer.utils import normalize_url, validate_url
+from page_analyzer.page_checker import extract_page_data
 
-load_dotenv('.env')
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv('.env.dev')
+except ModuleNotFoundError:
+    pass
+
+
+# load_dotenv('.env')
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
@@ -32,7 +44,7 @@ def show_url_page(url_id):
     if not url:
         abort(404)
     checks = db.get_url_checks(conn, url_id)
-    db.closed(conn)
+    db.close(conn)
     return render_template('urls/default.html', url=url, checks=checks)
 
 
@@ -52,25 +64,28 @@ def add_url():
     else:
         flash('Страница успешно добавлена', 'success')
         url_id = db.insert_url(conn, normal_url)
-    db.closed(conn)
+    db.close(conn)
     return redirect(url_for('show_url_page', url_id=url_id))
 
 
-@app.route('/urls/<url_id>/check/')
+@app.route('/urls/<url_id>/check/', methods=['POST'])
 def check_url_page(url_id):
     conn = db.connect_db(app)
     url = db.get_url(conn, url_id)
     try:
-        response = request.get(url.name)
+        response = requests.get(url.name, timeout=10)
         response.raise_for_status()
-    except request.RequestException:
+    except requests.RequestException:
         flash('Произошла ошибка при проверке', 'danger')
         conn.close()
         return redirect(url_for('show_url_page', url_id=url_id))
 
     url_info = extract_page_data(response)
+    flash('Страница успешно проверена', 'success')
+    db.insert_check(conn, url_id, url_info)
+    db.close(conn)
 
-    return
+    return redirect(url_for('show_url_page', url_id=url_id))
 
 
 @app.errorhandler(404)

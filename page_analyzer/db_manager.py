@@ -7,7 +7,7 @@ def connect_db(app):
     return psycopg2.connect(app.config['DATABASE_URL'])
 
 
-def closed(conn):
+def close(conn):
     conn.close()
 
 
@@ -41,36 +41,44 @@ def insert_url(conn, url, cursor=None):  # pylint: disable=W0613
         'INSERT INTO urls (name) VALUES (%s) RETURNING id;',
         (url,)
     )
-    res = cursor.fetchone().id
-    return res
+    result = cursor.fetchone().id
+    return result
 
 
 @perform_in_db()
 def get_url(conn, url_id, cursor=None):  # pylint: disable=W0613
     cursor.execute('SELECT * FROM urls WHERE id = (%s);', (url_id,))
-    return cursor.fetchone()
+    result = cursor.fetchone()
+    return result
 
 
 @perform_in_db()
 def check_url_exists(conn, url, cursor=None):  # pylint: disable=W0613
     cursor.execute(
         'SELECT * FROM urls WHERE name = %s;', (url,))
-    return cursor.fetchone()
+    result = cursor.fetchone()
+    return result
 
 
 @perform_in_db(with_commit=True)
 def insert_check(conn, url_id, url_info, cursor=None):  # pylint: disable=W0613
-    pass
+    cursor.execute(
+        'INSERT INTO url_checks (url_id, status_code,'
+        'h1, title, description)'
+        'VALUES (%s, %s, %s, %s, %s);',
+        (url_id, url_info['status_code'], url_info['h1'],
+         url_info['title'], url_info['description'])
+    )
 
 
 @perform_in_db()
 def get_url_checks(conn, url_id, cursor=None):  # pylint: disable=W0613
     cursor.execute(
-        'SELECT * FROM url_check WHERE url_id = (%s) ORDER BY id DESC;',
+        'SELECT * FROM url_checks WHERE url_id = (%s) ORDER BY id DESC;',
         (url_id,)
     )
-    res = cursor.fetchall()
-    return res
+    result = cursor.fetchall()
+    return result
 
 
 @perform_in_db()
@@ -80,11 +88,13 @@ def get_urls_with_latest_checks(conn, cursor=None):
         'SELECT DISTINCT ON (urls.id) '
         'urls.id AS id, '
         'urls.name AS name, '
-        'url_check.created_at AS created_at, '
-        'url_check.status_code AS status_code, '
-        'url_check.url_id AS url_id '
+        'url_checks.created_at AS created_at, '
+        'url_checks.status_code AS status_code, '
+        'url_checks.url_id AS url_id '
         'FROM urls '
-        'LEFT JOIN url_check ON urls.id=url_check.url_id '
-        'ORDER BY urls.id, url_check.url_id DESC'
+        'LEFT JOIN url_checks ON urls.id=url_checks.url_id '
+        'ORDER BY urls.id DESC'
+        # 'ORDER BY urls.id, url_checks.url_id DESC'
     )
-    return cursor.fetchall()
+    result = cursor.fetchall()
+    return result
