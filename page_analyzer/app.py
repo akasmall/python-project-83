@@ -1,6 +1,5 @@
 import os
 
-# from dotenv import load_dotenv
 from flask import (
     Flask, flash, redirect, render_template,
     abort, request, url_for
@@ -63,6 +62,17 @@ def add_url():
         flash('Страница успешно добавлена', 'success')
         url_id = db.insert_url(conn, normal_url)
     db.close(conn)
+    return redirect(url_for('show_url_page', url_id=url_id))
+
+
+@app.route('/urls/<url_id>/check/', methods=['POST'])
+def check_url_page(url_id):
+    conn = db.connect_db(app)
+    flash('Страница успешно проверена', 'success')
+    url_info = {}
+    db.insert_check(conn, url_id, url_info)
+    db.close(conn)
+
     return redirect(url_for('show_url_page', url_id=url_id))
 
 
