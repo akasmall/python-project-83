@@ -59,16 +59,12 @@ def add_url():
     if url_info:
         # flash('Страница уже существует', 'success')
         url_id = url_info.id
-        db.close(conn)
-        return f"worked POST and already there! = {url_id}"
     else:
         # flash('Страница успешно добавлена', 'success')
         url_id = db.insert_url(conn, normal_url)
-        db.close(conn)
-        return f"worked POST and added!' = {url_id}"
-    # db.close(conn)
+    db.close(conn)
 
-    # return redirect(url_for('show_url_page', url_id=url_id))
+    return redirect(url_for('show_url_page', url_id=url_id))
 
 
 @app.route('/urls/<url_id>/check/', methods=['POST'])
