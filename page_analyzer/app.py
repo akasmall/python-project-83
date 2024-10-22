@@ -27,6 +27,12 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/check_secret')
+def check_secret():
+    secret_key = app.secret_key if app.secret_key else 'Не задан'
+    return f'SECRET_KEY: {secret_key}'
+
+
 @app.route('/urls/')
 def show_urls_page():
     conn = db.connect_db(app)
