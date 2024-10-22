@@ -55,7 +55,7 @@ def get_url(conn, url_id, cursor=None):  # pylint: disable=W0613
 @perform_in_db()
 def check_url_exists(conn, url, cursor=None):  # pylint: disable=W0613
     cursor.execute(
-        'SELECT * FROM urls WHERE name = %s;', (url,))
+        'SELECT * FROM urls WHERE name = (%s);', (url,))
     result = cursor.fetchone()
     return result
 
@@ -76,7 +76,7 @@ def get_url_checks(conn, url_id, cursor=None):  # pylint: disable=W0613
 
 
 @perform_in_db()
-def get_urls_with_latest_checks(conn, cursor=None):
+def get_urls_with_latest_check(conn, cursor=None):
     # pylint: disable=W0613
     cursor.execute(
         'SELECT DISTINCT ON (urls.id) '

@@ -30,7 +30,8 @@ def index():
 @app.route('/urls/')
 def show_urls_page():
     conn = db.connect_db(app)
-    urls_check = db.get_urls_with_latest_checks(conn)
+    urls_check = db.get_urls_with_latest_check(conn)
+    db.close(conn)
     return render_template('urls/list.html', urls_check=urls_check)
 
 
@@ -59,12 +60,12 @@ def add_url():
         flash('Страница уже существует', 'success')
         url_id = url_info.id
         db.close(conn)
-        return 'worked POST and already there!'
+        return f"worked POST and already there! = {url_id}"
     else:
         flash('Страница успешно добавлена', 'success')
         url_id = db.insert_url(conn, normal_url)
         db.close(conn)
-        return 'worked POST and added!'
+        return f"worked POST and added!' = {url_id}"
     # db.close(conn)
 
     # return redirect(url_for('show_url_page', url_id=url_id))
