@@ -87,8 +87,6 @@ def get_urls_with_latest_checks(conn, cursor=None):
         'url_checks.url_id AS url_id '
         'FROM urls '
         'LEFT JOIN url_checks ON urls.id=url_checks.url_id '
-        'ORDER BY urls.id DESC'
-        # 'ORDER BY urls.id, url_checks.url_id DESC'
-    )
+        'ORDER BY urls.id DESC, url_checks.url_id DESC;')
     result = cursor.fetchall()
     return result
