@@ -56,13 +56,18 @@ def add_url():
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
     if url_info:
-        flash('Страница уже существует', 'danger')
+        flash('Страница уже существует', 'success')
         url_id = url_info.id
+        db.close(conn)
+        return 'worked POST and already there!'
     else:
         flash('Страница успешно добавлена', 'success')
         url_id = db.insert_url(conn, normal_url)
-    db.close(conn)
-    return redirect(url_for('show_url_page', url_id=url_id))
+        db.close(conn)
+        return 'worked POST and added!'
+    # db.close(conn)
+
+    # return redirect(url_for('show_url_page', url_id=url_id))
 
 
 @app.route('/urls/<url_id>/check/', methods=['POST'])
