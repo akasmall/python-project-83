@@ -57,12 +57,12 @@ def add_url():
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
     if url_info:
-        flash('Страница уже существует', 'success')
+        # flash('Страница уже существует', 'success')
         url_id = url_info.id
         db.close(conn)
         return f"worked POST and already there! = {url_id}"
     else:
-        flash('Страница успешно добавлена', 'success')
+        # flash('Страница успешно добавлена', 'success')
         url_id = db.insert_url(conn, normal_url)
         db.close(conn)
         return f"worked POST and added!' = {url_id}"
