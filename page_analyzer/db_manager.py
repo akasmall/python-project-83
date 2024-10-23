@@ -62,7 +62,11 @@ def check_url_exists(conn, url, cursor=None):  # pylint: disable=W0613
 
 @perform_in_db(with_commit=True)
 def insert_check(conn, url_id, url_info, cursor=None):  # pylint: disable=W0613
-    cursor.execute('INSERT INTO url_checks (url_id) VALUES (%s);', (url_id,))
+    cursor.execute(
+        'INSERT INTO url_checks (url_id, status_code, h1, title, description)'
+        'VALUES (%s, %s, %s, %s, %s);',
+        (url_id, url_info['status_code'], url_info['h1'],
+         url_info['title'], url_info['description']))
 
 
 @perform_in_db()

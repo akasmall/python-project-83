@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import (
     Flask, flash, redirect, render_template,
@@ -6,6 +7,7 @@ from flask import (
 )
 from page_analyzer import db_manager as db
 from page_analyzer.utils import normalize_url, validate_url
+from page_analyzer.page_checker import extract_page_data
 
 try:
     from dotenv import load_dotenv
@@ -76,8 +78,17 @@ def add_url():
 @app.route('/urls/<url_id>/check/', methods=['POST'])
 def check_url_page(url_id):
     conn = db.connect_db(app)
+    url = db.get_url(conn, url_id)
+    try:
+        response = requests.get(url.name, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException:
+        flash('Произошла ошибка при проверке', 'danger')
+        conn.close()
+        return redirect(url_for('show_url_page', url_id=url_id))
+
+    url_info = extract_page_data(response)
     flash('Страница успешно проверена', 'success')
-    url_info = {}
     db.insert_check(conn, url_id, url_info)
     db.close(conn)
 
