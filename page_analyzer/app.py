@@ -51,7 +51,7 @@ def show_url_page(url_id):
         abort(404)
     checks = db.get_url_checks(conn, url_id)
     db.close(conn)
-    return render_template('urls/default.html', url=url, checks=checks)
+    return render_template('urls/detail.html', url=url, checks=checks)
 
 
 @app.route('/urls/', methods=['POST'])
@@ -93,6 +93,16 @@ def check_url_page(url_id):
     db.close(conn)
 
     return redirect(url_for('show_url_page', url_id=url_id))
+
+
+@app.errorhandler(404)
+def page_not_found(_):
+    return render_template('errors/404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_server_error(_):
+    return render_template('errors/500.html'), 500
 
 
 if __name__ == '__main__':
