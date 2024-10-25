@@ -65,7 +65,7 @@ def add_url():
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
     if url_info:
-        flash('Страница уже существует', 'success')
+        flash('Страница уже существует', 'info')
         url_id = url_info.id
     else:
         flash('Страница успешно добавлена', 'success')
