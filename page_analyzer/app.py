@@ -63,7 +63,7 @@ def add_url():
     url_check_result = validate_url(normal_url)
     if url_check_result:
         flash(url_check_result, 'danger')
-        return redirect(url_for('index'), code=422)
+        return redirect(url_for('index'), code=308)
         # return render_template('index.html'), 422
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
