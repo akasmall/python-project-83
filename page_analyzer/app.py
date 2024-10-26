@@ -60,10 +60,10 @@ def show_url_page(url_id):
 def add_url():
     url = request.form.get('url')
     normal_url = normalize_url(url)
-    url_check_result = validate_url(normal_url)
-    if url_check_result:
-        flash(url_check_result, 'danger')
-        # return redirect(url_for('index'), code=308)
+    verified_url = validate_url(normal_url)
+    if verified_url:
+        flash(verified_url, 'danger')
+        # return redirect(url_for('index'), code=422)
         return render_template('index.html'), 422
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
