@@ -12,7 +12,8 @@ from page_analyzer.page_checker import extract_page_data
 try:
     from dotenv import load_dotenv
 
-    load_dotenv('.env.dev')
+    # load_dotenv('.env.dev')
+    load_dotenv()
 except ModuleNotFoundError:
     pass
 
