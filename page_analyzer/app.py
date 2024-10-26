@@ -18,7 +18,8 @@ from page_analyzer.page_checker import extract_page_data
 #     pass
 
 
-load_dotenv('.env')
+# load_dotenv('.env')
+load_dotenv('')
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
