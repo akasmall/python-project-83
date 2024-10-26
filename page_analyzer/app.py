@@ -63,8 +63,8 @@ def add_url():
     url_check_result = validate_url(normal_url)
     if url_check_result:
         flash(url_check_result, 'danger')
-        return redirect(url_for('index'), code=308)
-        # return render_template('index.html'), 422
+        # return redirect(url_for('index'), code=308)
+        return render_template('index.html'), 422
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
     if url_info:
@@ -98,14 +98,14 @@ def check_url_page(url_id):
     return redirect(url_for('show_url_page', url_id=url_id))
 
 
-@app.errorhandler(404)
-def page_not_found(_):
-    return render_template('errors/404.html'), 404
+# @app.errorhandler(404)
+# def page_not_found(_):
+#     return render_template('errors/404.html'), 404
 
 
-@app.errorhandler(500)
-def internal_server_error(_):
-    return render_template('errors/500.html'), 500
+# @app.errorhandler(500)
+# def internal_server_error(_):
+#     return render_template('errors/500.html'), 500
 
 
 if __name__ == '__main__':
