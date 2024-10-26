@@ -56,7 +56,7 @@ def show_url_page(url_id):
     return render_template('urls/detail.html', url=url, checks=checks)
 
 
-@app.route('/urls/', methods=['POST'])
+@app.post('/urls/')
 def add_url():
     url = request.form.get('url')
     normal_url = normalize_url(url)
@@ -78,7 +78,7 @@ def add_url():
     return redirect(url_for('show_url_page', url_id=url_id))
 
 
-@app.route('/urls/<url_id>/check/', methods=['POST'])
+@app.post('/urls/<url_id>/check/')
 def check_url_page(url_id):
     conn = db.connect_db(app)
     url = db.get_url(conn, url_id)
@@ -98,14 +98,14 @@ def check_url_page(url_id):
     return redirect(url_for('show_url_page', url_id=url_id))
 
 
-# @app.errorhandler(404)
-# def page_not_found(_):
-#     return render_template('errors/404.html'), 404
+@app.errorhandler(404)
+def page_not_found(_):
+    return render_template('errors/404.html'), 404
 
 
-# @app.errorhandler(500)
-# def internal_server_error(_):
-#     return render_template('errors/500.html'), 500
+@app.errorhandler(500)
+def internal_server_error(_):
+    return render_template('errors/500.html'), 500
 
 
 if __name__ == '__main__':
