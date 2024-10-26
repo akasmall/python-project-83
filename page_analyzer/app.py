@@ -1,6 +1,6 @@
 import os
 import requests
-
+from dotenv import load_dotenv
 from flask import (
     Flask, flash, redirect, render_template,
     abort, request, url_for
@@ -9,16 +9,16 @@ from page_analyzer import db_manager as db
 from page_analyzer.utils import normalize_url, validate_url
 from page_analyzer.page_checker import extract_page_data
 
-try:
-    from dotenv import load_dotenv
+# try:
+#     from dotenv import load_dotenv
 
-    # load_dotenv('.env.dev')
-    load_dotenv()
-except ModuleNotFoundError:
-    pass
+#     # load_dotenv('.env.dev')
+#     load_dotenv()
+# except ModuleNotFoundError:
+#     pass
 
 
-# load_dotenv('.env')
+load_dotenv('.env')
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
