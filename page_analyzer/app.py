@@ -65,7 +65,7 @@ def add_url():
         flash(verified_url, 'danger')
         # return redirect(url_for('show_urls_page'), code=422)
         # return render_template('index.html')
-        return render_template('index.html'), 422
+        return render_template('index.html', url=normal_url), 422
         # return render_template('urls/list.html'), 422
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
@@ -85,7 +85,7 @@ def check_url_page(url_id):
     conn = db.connect_db(app)
     url = db.get_url(conn, url_id)
     try:
-        response = requests.get(url.name, timeout=10)
+        response = requests.get(url.name, timeout=50)
         response.raise_for_status()
     except requests.RequestException:
         flash('Произошла ошибка при проверке', 'danger')
