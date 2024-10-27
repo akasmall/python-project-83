@@ -64,8 +64,8 @@ def add_url():
     if verified_url:
         flash(verified_url, 'danger')
         # return redirect(url_for('show_urls_page'), code=422)
-        return render_template('index.html')
-        # return render_template('index.html'), 422
+        # return render_template('index.html')
+        return render_template('index.html'), 422
         # return render_template('urls/list.html'), 422
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
