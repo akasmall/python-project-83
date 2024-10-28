@@ -40,7 +40,7 @@ def index():
 
 
 # @app.route('/urls')
-@app.get('/urls/')
+@app.get('/urls')
 def show_urls_page():
     conn = db.connect_db(app)
     urls_check = db.get_urls_with_latest_check(conn)
