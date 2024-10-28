@@ -26,7 +26,9 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.config['DATABASE_URL'] = os.getenv('DATABASE_URL')
 
 
-@app.route('/')
+# @app.route('/')
+
+@app.get('/')
 def index():
     return render_template('index.html')
 
@@ -37,7 +39,8 @@ def index():
 #     return f'SECRET_KEY: {secret_key}'
 
 
-@app.route('/urls/')
+# @app.route('/urls/')
+@app.get('/urls/')
 def show_urls_page():
     conn = db.connect_db(app)
     urls_check = db.get_urls_with_latest_check(conn)
@@ -45,7 +48,8 @@ def show_urls_page():
     return render_template('urls/list.html', urls_check=urls_check)
 
 
-@app.route('/urls/<url_id>/')
+# @app.route('/urls/<url_id>/')
+@app.get('/urls/<url_id>/')
 def show_url_page(url_id):
     conn = db.connect_db(app)
     url = db.get_url(conn, url_id)
