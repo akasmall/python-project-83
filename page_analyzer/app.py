@@ -39,7 +39,7 @@ def index():
 #     return f'SECRET_KEY: {secret_key}'
 
 
-# @app.route('/urls/')
+# @app.route('/urls')
 @app.get('/urls/')
 def show_urls_page():
     conn = db.connect_db(app)
@@ -48,8 +48,8 @@ def show_urls_page():
     return render_template('urls/list.html', urls_check=urls_check)
 
 
-# @app.route('/urls/<url_id>/')
-@app.get('/urls/<url_id>/')
+# @app.route('/urls/<url_id>')
+@app.get('/urls/<url_id>')
 def show_url_page(url_id):
     conn = db.connect_db(app)
     url = db.get_url(conn, url_id)
@@ -60,7 +60,7 @@ def show_url_page(url_id):
     return render_template('urls/detail.html', url=url, checks=checks)
 
 
-@app.post('/urls/')
+@app.post('/urls')
 def add_url():
     url = request.form.get('url')
     normal_url = normalize_url(url)
@@ -84,7 +84,7 @@ def add_url():
     return redirect(url_for('show_url_page', url_id=url_id))
 
 
-@app.post('/urls/<url_id>/check/')
+@app.post('/urls/<url_id>/check')
 def check_url_page(url_id):
     conn = db.connect_db(app)
     url = db.get_url(conn, url_id)
