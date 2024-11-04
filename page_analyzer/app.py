@@ -23,23 +23,16 @@ def index():
 
 @app.get('/urls')
 def show_urls_page():
-    # conn = db.connect_db(app)
-    # urls_check = db.get_urls_with_latest_check(conn)
     urls_check = db.get_urls_with_latest_check(app)
-    # db.close(conn)
     return render_template('urls/list.html', urls_check=urls_check)
 
 
 @app.get('/urls/<url_id>')
 def show_url_page(url_id):
-    # conn = db.connect_db(app)
-    # url = db.get_url(conn, url_id)
     url = db.get_url(app, int(url_id))
     if not url:
         abort(404)
-    # checks = db.get_url_checks(conn, url_id)
     checks = db.get_url_checks(app, url_id)
-    # db.close(conn)
     return render_template('urls/detail.html', url=url, checks=checks)
 
 
@@ -51,8 +44,6 @@ def add_url():
     if not is_valid:
         flash(error_message, 'danger')
         return render_template('index.html', url=normal_url), 422
-    # conn = db.connect_db(app)
-    # url_info = db.check_url_exists(conn, normal_url)
     url_info = db.check_url_exists(app, normal_url)
     if url_info:
         flash('Страница уже существует', 'info')
@@ -60,30 +51,23 @@ def add_url():
     else:
         flash('Страница успешно добавлена', 'success')
         url_id = db.insert_url(app, normal_url)
-        # url_id = db.insert_url(conn, normal_url)
-    # db.close(conn)
 
     return redirect(url_for('show_url_page', url_id=url_id))
 
 
 @app.post('/urls/<url_id>/check')
 def check_url_page(url_id):
-    # conn = db.connect_db(app)
-    # url = db.get_url(conn, url_id)
     url = db.get_url(app, url_id)
     try:
         response = requests.get(url.name, timeout=50)
         response.raise_for_status()
     except requests.RequestException:
         flash('Произошла ошибка при проверке', 'danger')
-        # conn.close()
         return redirect(url_for('show_url_page', url_id=url_id))
 
     url_info = extract_page_data(response.text, response.status_code)
     flash('Страница успешно проверена', 'success')
-    # db.insert_check(conn, url_id, url_info)
     db.insert_check(app, url_id, url_info)
-    # db.close(conn)
 
     return redirect(url_for('show_url_page', url_id=url_id))
 
