@@ -44,6 +44,7 @@
                         </tr>
                     </thead>
                 </tbody>
+                {% if checks is not none and checks %}
                 <tbody>
                     {% for check in checks %}
                     <tr>
@@ -56,6 +57,7 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+                {% endif %}
             </table>
         </div>
     </div>
