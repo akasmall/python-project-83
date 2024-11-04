@@ -1,4 +1,3 @@
-import os
 import requests
 from dotenv import load_dotenv
 from flask import (
@@ -8,38 +7,20 @@ from flask import (
 from page_analyzer import db_manager as db
 from page_analyzer.utils import normalize_url, validate_url
 from page_analyzer.page_checker import extract_page_data
-
-# try:
-#     from dotenv import load_dotenv
-
-#     # load_dotenv('.env.dev')
-#     load_dotenv()
-# except ModuleNotFoundError:
-#     pass
+from page_analyzer.config import config
 
 
-# load_dotenv('.env')
 load_dotenv()
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = config.SECRET_KEY
+app.config['DATABASE_URL'] = config.DATABASE_URL
 
-app.config['DATABASE_URL'] = os.getenv('DATABASE_URL')
-
-
-# @app.route('/')
 
 @app.get('/')
 def index():
     return render_template('index.html')
 
 
-# @app.route('/check_secret')
-# def check_secret():
-#     secret_key = app.secret_key if app.secret_key else 'Не задан'
-#     return f'SECRET_KEY: {secret_key}'
-
-
-# @app.route('/urls')
 @app.get('/urls')
 def show_urls_page():
     conn = db.connect_db(app)
@@ -48,7 +29,6 @@ def show_urls_page():
     return render_template('urls/list.html', urls_check=urls_check)
 
 
-# @app.route('/urls/<url_id>')
 @app.get('/urls/<url_id>')
 def show_url_page(url_id):
     conn = db.connect_db(app)
@@ -64,13 +44,10 @@ def show_url_page(url_id):
 def add_url():
     url = request.form.get('url')
     normal_url = normalize_url(url)
-    verified_url = validate_url(normal_url)
-    if verified_url:
-        flash(verified_url, 'danger')
-        # return redirect(url_for('show_urls_page'), code=422)
-        # return render_template('index.html')
+    is_valid, error_message = validate_url(normal_url)
+    if not is_valid:
+        flash(error_message, 'danger')
         return render_template('index.html', url=normal_url), 422
-        # return render_template('urls/list.html'), 422
     conn = db.connect_db(app)
     url_info = db.check_url_exists(conn, normal_url)
     if url_info:
@@ -96,7 +73,7 @@ def check_url_page(url_id):
         conn.close()
         return redirect(url_for('show_url_page', url_id=url_id))
 
-    url_info = extract_page_data(response)
+    url_info = extract_page_data(response.text, response.status_code)
     flash('Страница успешно проверена', 'success')
     db.insert_check(conn, url_id, url_info)
     db.close(conn)
