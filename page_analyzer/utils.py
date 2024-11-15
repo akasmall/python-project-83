@@ -3,7 +3,19 @@ import validators
 
 
 class URLValidationError(Exception):
-    pass
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
+
+
+class URLTooLongError(URLValidationError):
+    def __init__(self):
+        super().__init__("URL превышает 255 символов")
+
+
+class InvalidURLError(URLValidationError):
+    def __init__(self):
+        super().__init__("Некорректный URL")
 
 
 def normalize_url(url):
@@ -14,10 +26,10 @@ def normalize_url(url):
 def validate_url(url):
     try:
         if len(url) > 255:
-            raise URLValidationError("URL превышает 255 символов")
+            raise URLTooLongError()
         if not validators.url(url):
-            raise URLValidationError("Некорректный URL")
+            raise InvalidURLError()
 
-        return True, None
-    except Exception as e:
-        return False, str(e)
+        return None
+    except URLValidationError as e:
+        return str(e)
