@@ -36,11 +36,15 @@ def show_url_page(url_id):
 
 @app.post('/urls')
 def add_url():
+    dict_message = {
+        "url_length": "URL превышает 255 символов",
+        "url_incorrect": "Некорректный URL",
+    }
     url = request.form.get('url')
     normal_url = normalize_url(url)
     error_message = validate_url(normal_url)
     if error_message:
-        flash(error_message, 'danger')
+        flash(dict_message[error_message], 'danger')
         return render_template('index.html', url=normal_url), 422
     url_info = db.check_url_exists(db_url, normal_url)
     if url_info:
