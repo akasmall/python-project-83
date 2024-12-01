@@ -1,12 +1,34 @@
 import requests
-from flask import Flask, flash, redirect, render_template, abort, request
-from flask import url_for
+from flask import (
+    Flask,
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+
 from page_analyzer import db_manager as db
-from page_analyzer.utils import normalize_url, validate_url
-from page_analyzer.page_checker import extract_page_data
 from page_analyzer.config import config
-from page_analyzer.utils import URLValidationError
-from page_analyzer.utils import InvalidURLError, URLTooLongError
+from page_analyzer.page_checker import extract_page_data
+from page_analyzer.utils import (
+    InvalidURLError,
+    URLTooLongError,
+    URLValidationError,
+    normalize_url,
+    validate_url,
+)
+
+# import requests
+# from flask import Flask, flash, redirect, render_template, abort, request
+# from flask import url_for
+# from page_analyzer import db_manager as db
+# from page_analyzer.utils import normalize_url, validate_url
+# from page_analyzer.page_checker import extract_page_data
+# from page_analyzer.config import config
+# from page_analyzer.utils import URLValidationError
+# from page_analyzer.utils import InvalidURLError, URLTooLongError
 
 
 app = Flask(__name__)

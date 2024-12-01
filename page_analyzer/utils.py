@@ -1,4 +1,5 @@
 from urllib.parse import urlparse
+
 import validators
 
 URL_LENGTH = 255

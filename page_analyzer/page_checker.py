@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 
-
 MAX_LENGTH = 255
 
 
@@ -15,6 +14,7 @@ def extract_page_data(txt_response, status_code):
         "title": title_tag.text[:MAX_LENGTH] if title_tag else "",
         "status_code": status_code,
         "description": (
-            description_tag.get("content", "")[:MAX_LENGTH] if description_tag else ""
+            description_tag.get("content", "")[:MAX_LENGTH]
+            if description_tag else ""
         ),
     }

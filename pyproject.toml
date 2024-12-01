@@ -23,6 +23,10 @@ flake8 = "^7.1.1"
 pytest = "^8.3.2"
 pylint = "^3.2.7"
 black = "^24.10.0"
+ruff = "^0.8.1"
+
+[tool.ruff]
+select = ["I001"]  # Включает проверку порядка импортов
 
 [build-system]
 requires = ["poetry-core"]
