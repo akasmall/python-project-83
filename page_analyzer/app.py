@@ -5,6 +5,8 @@ from page_analyzer import db_manager as db
 from page_analyzer.utils import normalize_url, validate_url
 from page_analyzer.page_checker import extract_page_data
 from page_analyzer.config import config
+from page_analyzer.utils import URLValidationError
+from page_analyzer.utils import InvalidURLError, URLTooLongError
 
 
 app = Flask(__name__)
@@ -39,17 +41,22 @@ def show_url_page(url_id):
 def add_url():
     url = request.form.get("url")
     normal_url = normalize_url(url)
-    error_message = validate_url(normal_url)
-    if error_message is not None:
-        if error_message == "255":
-            flash("URL превышает 255 символов", "danger")
-        elif error_message == "url_incorrect":
-            flash("Некорректный URL", "danger")
-        else:
-            flash(error_message, "danger")
+
+    try:
+        validate_url(normal_url)
+    except URLTooLongError:
+        flash("URL превышает 255 символов", "danger")
         return render_template("index.html", url=normal_url), 422
+    except InvalidURLError:
+        flash("Некорректный URL", "danger")
+        return render_template("index.html", url=normal_url), 422
+    except URLValidationError as e:
+        flash(str(e), "danger")
+        return render_template("index.html", url=normal_url), 422
+
     with db.get_connection(db_url) as conn:
         url_info = db.check_url_exists(conn, normal_url)
+
     if url_info:
         flash("Страница уже существует", "info")
         url_id = url_info.id

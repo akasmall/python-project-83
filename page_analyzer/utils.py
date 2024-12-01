@@ -22,12 +22,9 @@ def normalize_url(url):
 
 
 def validate_url(url):
-    try:
-        if len(url) > URL_LENGTH:
-            raise URLTooLongError(URL_LENGTH)
-        if not validators.url(url):
-            raise InvalidURLError("url_incorrect")
+    if len(url) > URL_LENGTH:
+        raise URLTooLongError(URL_LENGTH)
+    if not validators.url(url):
+        raise InvalidURLError("url_incorrect")
 
-        return None
-    except URLValidationError as e:
-        return str(e)
+    return None
