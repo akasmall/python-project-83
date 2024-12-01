@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import psycopg2
 from psycopg2.extras import NamedTupleCursor
 
@@ -10,86 +11,54 @@ def close(conn):
     conn.close()
 
 
-def insert_url(db_url, url):
-    conn = connect_db(db_url)
-    cursor = None
+@contextmanager
+def get_connection(db_url):
+    conn = None
     try:
-        cursor = conn.cursor(cursor_factory=NamedTupleCursor)
-        query = 'INSERT INTO urls (name) VALUES (%s) RETURNING id;'
-        cursor.execute(query, (url,))
-        result = cursor.fetchone()
+        conn = connect_db(db_url)
+        yield conn
+        conn.commit()
     except Exception as err:
         conn.rollback()
         raise err
     finally:
-        if cursor:
-            cursor.close()
-        conn.commit()
-        close(conn)
-    return result.id
+        if conn:
+            conn.close()
 
 
-def get_url(db_url, url_id):
-
-    conn = connect_db(db_url)
-    cursor = None
-    try:
-        cursor = conn.cursor(cursor_factory=NamedTupleCursor)
+def get_url(conn, url_id):
+    with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
         query = 'SELECT * FROM urls WHERE id = (%s);'
-        cursor.execute(query, (url_id,))
-        result = cursor.fetchone()
-    except Exception as err:
-        conn.rollback()
-        raise err
-    finally:
-        if cursor:
-            cursor.close()
-        conn.commit()
-        close(conn)
-    return result
+        cur.execute(query, (url_id,))
+        result = cur.fetchone()
+        return result
 
 
-def check_url_exists(db_url, url):
+def insert_url(conn, url):
+    with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
+        query = 'INSERT INTO urls (name) VALUES (%s) RETURNING id;'
+        cur.execute(query, (url,))
+        result = cur.fetchone()
+        return result.id
 
-    conn = connect_db(db_url)
-    cursor = None
-    try:
-        cursor = conn.cursor(cursor_factory=NamedTupleCursor)
+
+def check_url_exists(conn, url):
+    with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
         query = 'SELECT * FROM urls WHERE name = (%s);'
-        cursor.execute(query, (url,))
-        result = cursor.fetchone()
-    except Exception as err:
-        conn.rollback()
-        raise err
-    finally:
-        if cursor:
-            cursor.close()
-        conn.commit()
-        close(conn)
-    return result
+        cur.execute(query, (url,))
+        result = cur.fetchone()
+        return result
 
 
-def get_url_checks(db_url, url_id,):
-
-    conn = connect_db(db_url)
-    cursor = None
-    try:
-        cursor = conn.cursor(cursor_factory=NamedTupleCursor)
+def get_url_checks(conn, url_id,):
+    with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
         query = 'SELECT * FROM url_checks WHERE url_id = (%s) ORDER BY id DESC;'
-        cursor.execute(query, (url_id,))
-        result = cursor.fetchall()
-    except Exception as err:
-        conn.rollback()
-        raise err
-    finally:
-        if cursor:
-            cursor.close()
-        conn.commit()
-        close(conn)
-    return result
+        cur.execute(query, (url_id,))
+        result = cur.fetchall()
+        return result
 
 
-def insert_check(db_url, url_id, url_info):
+def insert_check(conn, url_id, url_info):
     url_info_data = (
         url_id,
         url_info['status_code'],
@@ -97,11 +66,7 @@ def insert_check(db_url, url_id, url_info):
         url_info['title'],
         url_info['description']
     )
-
-    conn = connect_db(db_url)
-    cursor = None
-    try:
-        cursor = conn.cursor(cursor_factory=NamedTupleCursor)
+    with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
         query = (
             '''INSERT INTO url_checks (
                 url_id,
@@ -113,23 +78,11 @@ def insert_check(db_url, url_id, url_info):
             VALUES (%s, %s, %s, %s, %s);
             '''
         )
-        cursor.execute(query, url_info_data)
-    except Exception as err:
-        conn.rollback()
-        raise err
-    finally:
-        if cursor:
-            cursor.close()
-        conn.commit()
-        close(conn)
+        cur.execute(query, url_info_data)
 
 
-def get_urls_with_latest_check(db_url):
-
-    conn = connect_db(db_url)
-    cursor = None
-    try:
-        cursor = conn.cursor(cursor_factory=NamedTupleCursor)
+def get_urls_with_latest_check(conn):
+    with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
         query = (
             'SELECT DISTINCT ON(urls.id) '
             'urls.id AS id, '
@@ -141,14 +94,6 @@ def get_urls_with_latest_check(db_url):
             'LEFT JOIN url_checks ON urls.id = url_checks.url_id '
             'ORDER BY urls.id DESC, url_checks.url_id DESC;'
         )
-        cursor.execute(query)
-        result = cursor.fetchall()
-    except Exception as err:
-        conn.rollback()
-        raise err
-    finally:
-        if cursor:
-            cursor.close()
-        conn.commit()
-        close(conn)
-    return result
+        cur.execute(query)
+        result = cur.fetchall()
+        return result

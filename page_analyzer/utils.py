@@ -1,11 +1,11 @@
 from urllib.parse import urlparse
 import validators
 
+URL_LENGTH = 255
+
 
 class URLValidationError(Exception):
-    def __init__(self, message):
-        super().__init__(message)
-        self.message = message
+    pass
 
 
 class URLTooLongError(URLValidationError):
@@ -23,8 +23,8 @@ def normalize_url(url):
 
 def validate_url(url):
     try:
-        if len(url) > 255:
-            raise URLTooLongError("url_length")
+        if len(url) > URL_LENGTH:
+            raise URLTooLongError(URL_LENGTH)
         if not validators.url(url):
             raise InvalidURLError("url_incorrect")
 
