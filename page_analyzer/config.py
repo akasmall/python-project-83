@@ -5,9 +5,9 @@ load_dotenv()
 
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY')
+    SECRET_KEY = os.getenv("SECRET_KEY")
     # DATABASE_URL = os.getenv('DATABASE_URL')
-    DATABASE_URL = os.environ.get('DATABASE_URL')
+    DATABASE_URL = os.environ.get("DATABASE_URL")
 
     def __init__(self):
         if not self.SECRET_KEY:
