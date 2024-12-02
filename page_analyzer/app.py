@@ -20,7 +20,6 @@ from page_analyzer.utils import (
     validate_url,
 )
 
-
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 db_url = config.DATABASE_URL
