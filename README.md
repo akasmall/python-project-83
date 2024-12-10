@@ -50,4 +50,4 @@ make start
 
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/akasmall/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/akasmall/python-project-83/actions)
-[![Maintainability](https://api.codeclimate.com/v1/badges/6c4adf1f8be5cc6e7697/maintainability)](https://codeclimate.com/github/akasmall/python-project-83/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0f7aff68e1d19cafdb0f/maintainability)](https://codeclimate.com/github/akasmall/python-project-83/maintainability)
