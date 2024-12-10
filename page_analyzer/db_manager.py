@@ -32,7 +32,7 @@ def get_url(conn, url_id):
         query = "SELECT * FROM urls WHERE id = (%s);"
         cur.execute(query, (url_id,))
         result = cur.fetchone()
-        return result
+    return result
 
 
 def insert_url(conn, url):
@@ -40,7 +40,7 @@ def insert_url(conn, url):
         query = "INSERT INTO urls (name) VALUES (%s) RETURNING id;"
         cur.execute(query, (url,))
         result = cur.fetchone()
-        return result.id
+    return result.id
 
 
 def check_url_exists(conn, url):
@@ -48,7 +48,7 @@ def check_url_exists(conn, url):
         query = "SELECT * FROM urls WHERE name = (%s);"
         cur.execute(query, (url,))
         result = cur.fetchone()
-        return result
+    return result
 
 
 def get_url_checks(
@@ -59,7 +59,7 @@ def get_url_checks(
         query = "SELECT * FROM url_checks WHERE url_id = (%s) ORDER BY id DESC;"
         cur.execute(query, (url_id,))
         result = cur.fetchall()
-        return result
+    return result
 
 
 def insert_check(conn, url_id, url_info):
@@ -98,4 +98,4 @@ def get_urls_with_latest_check(conn):
         )
         cur.execute(query)
         result = cur.fetchall()
-        return result
+    return result

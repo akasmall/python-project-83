@@ -8,16 +8,15 @@ from flask import (
     request,
     url_for,
 )
-
 from page_analyzer import db_manager as db
 from page_analyzer.config import config
-from page_analyzer.page_checker import extract_page_data
-from page_analyzer.utils import normalize_url, validate_url
 from page_analyzer.exceptions import (
     InvalidURLError,
     URLTooLongError,
     URLValidationError,
 )
+from page_analyzer.page_checker import extract_page_data
+from page_analyzer.utils import normalize_url, validate_url
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY

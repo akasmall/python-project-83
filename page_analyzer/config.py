@@ -11,9 +11,9 @@ class Config:
 
     def __init__(self):
         if not self.SECRET_KEY:
-            raise ValueError("SECRET_KEY не найден в переменных окружения")
+            raise ValueError("SECRET_KEY not found in environment variables")
         if not self.DATABASE_URL:
-            raise ValueError("DATABASE_URL не найден в переменных окружения")
+            raise ValueError("DATABASE_URL not found in environment variables")
 
 
 config = Config()

@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 import validators
+
 from page_analyzer.exceptions import InvalidURLError, URLTooLongError
 
 URL_LENGTH = 255
