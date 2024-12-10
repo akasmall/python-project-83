@@ -1,20 +1,9 @@
 from urllib.parse import urlparse
 
 import validators
+from page_analyzer.exceptions import InvalidURLError, URLTooLongError
 
 URL_LENGTH = 255
-
-
-class URLValidationError(Exception):
-    pass
-
-
-class URLTooLongError(URLValidationError):
-    pass
-
-
-class InvalidURLError(URLValidationError):
-    pass
 
 
 def normalize_url(url):
@@ -24,8 +13,8 @@ def normalize_url(url):
 
 def validate_url(url):
     if len(url) > URL_LENGTH:
-        raise URLTooLongError(URL_LENGTH)
+        raise URLTooLongError()
     if not validators.url(url):
-        raise InvalidURLError("url_incorrect")
+        raise InvalidURLError()
 
     return None
