@@ -8,6 +8,7 @@ from flask import (
     request,
     url_for,
 )
+
 from page_analyzer import db_manager as db
 from page_analyzer.config import config
 from page_analyzer.exceptions import (
