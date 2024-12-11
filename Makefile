@@ -9,6 +9,9 @@ dev:
 lint:
 	poetry run flake8 page_analyzer
 
+lint_ruff:
+	ruff check . --fix
+
 build:
 	./build.sh
 
